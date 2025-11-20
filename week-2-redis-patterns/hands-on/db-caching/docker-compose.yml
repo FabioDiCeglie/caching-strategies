@@ -30,6 +30,23 @@ services:
       timeout: 3s
       retries: 5
 
+  app:
+    build: .
+    container_name: blog-api
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://blog_user:blog_pass@postgres:5432/blog_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
 volumes:
   postgres_data:
   redis_data:
