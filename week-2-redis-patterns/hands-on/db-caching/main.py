@@ -11,15 +11,32 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
+from contextlib import asynccontextmanager
 import time
 
 from database import get_db, init_db, seed_data, Post
 from cache import cache
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialize database and Redis on startup"""
+    init_db()
+    seed_data()
+    
+    if cache.ping():
+        print("✅ Redis connected")
+    else:
+        print("⚠️  Redis not connected - caching disabled")
+    
+    yield
+
+
 app = FastAPI(
     title="Blog API with Redis Caching",
     description="Demonstrates caching patterns with real database",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 
@@ -43,18 +60,6 @@ class PostResponse(BaseModel):
     created_at: str
     updated_at: str
     cached: bool = False
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database and Redis on startup"""
-    init_db()
-    seed_data()
-    
-    if cache.ping():
-        print("✅ Redis connected")
-    else:
-        print("⚠️  Redis not connected - caching disabled")
 
 
 @app.get("/posts", response_model=List[PostResponse])
