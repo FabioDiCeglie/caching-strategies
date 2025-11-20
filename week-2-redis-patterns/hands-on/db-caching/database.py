@@ -6,8 +6,12 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+import os
 
-DATABASE_URL = "postgresql://blog_user:blog_pass@localhost:5432/blog_db"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://blog_user:blog_pass@localhost:5432/blog_db"
+)
 
 engine = create_engine(DATABASE_URL)
 

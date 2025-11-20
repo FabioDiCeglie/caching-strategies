@@ -5,6 +5,7 @@ Implements cache-aside pattern
 
 import redis
 import json
+import os
 from typing import Optional
 
 
@@ -99,5 +100,8 @@ class PostCache(RedisCache):
         self.delete_pattern(f"{self.prefix}:*")
 
 
-cache = PostCache()
+cache = PostCache(
+    host=os.getenv('REDIS_HOST', 'localhost'),
+    port=int(os.getenv('REDIS_PORT', 6379))
+)
 
