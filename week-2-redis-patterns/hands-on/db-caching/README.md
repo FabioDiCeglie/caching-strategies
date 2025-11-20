@@ -51,6 +51,10 @@ docker exec -it blog-api python test_performance.py
 - Invalidates `post:all` cache
 - Next GET will be cache miss (fresh data)
 
+### Performance Test Results
+
+![Test Results](test-results.png)
+
 ## 🔑 Key Concepts
 
 ### Cache-Aside Pattern
