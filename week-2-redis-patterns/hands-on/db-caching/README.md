@@ -114,11 +114,3 @@ docker exec -it postgres-blog-api psql -U blog_user -d blog_db
 └── stop.sh              # Stop script
 ```
 
-## 💡 Next Steps
-
-- Add pagination to `/posts` endpoint
-- Implement cache warming strategies
-- Add monitoring/metrics (Prometheus)
-- Try Write-Through pattern instead of invalidation
-- Experiment with different TTL values
-
