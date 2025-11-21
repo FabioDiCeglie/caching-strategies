@@ -230,7 +230,6 @@ class CacheManager:
             return {"error": str(e)}
 
 
-# Initialize cache manager with environment variables
 cache = CacheManager(
     host=os.getenv('REDIS_HOST', 'localhost'),
     port=int(os.getenv('REDIS_PORT', 6379))
