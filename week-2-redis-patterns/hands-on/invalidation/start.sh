@@ -26,4 +26,8 @@ echo "🛑 Stop:        ./stop.sh"
 echo ""
 echo "Run tests with: docker exec -it shop-api python test_strategies.py"
 echo ""
+echo "💡 To see event-based invalidation in action:"
+echo "   Terminal 1: docker exec -it shop-api python worker.py"
+echo "   Terminal 2: docker exec -it shop-api python test_strategies.py"
+echo ""
 

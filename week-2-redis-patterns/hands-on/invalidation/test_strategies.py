@@ -141,6 +141,10 @@ def test_strategy_4_events():
     """Strategy 4: Event-Based Invalidation"""
     print_header("📢 Strategy 4: Event-Based (Pub/Sub)")
     
+    print("\n💡 TIP: Run the worker to see events in real-time:")
+    print("   docker exec -it shop-api python worker.py")
+    print("   (in a separate terminal)")
+    
     product_id = 4
     
     # Cache the product
