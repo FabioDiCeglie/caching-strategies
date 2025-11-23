@@ -54,7 +54,7 @@ def test_without_lock():
     print("="*70)
     
     event_id = 1  # Event with only 1 ticket
-    num_users = 5
+    num_users = 10  # More users = more likely to overlap
     
     # Reset event
     print("\n📋 Setup: Resetting event to 1 ticket...")
@@ -108,7 +108,7 @@ def test_with_lock():
     print("="*70)
     
     event_id = 1  # Same event with 1 ticket
-    num_users = 5
+    num_users = 10  # More users = more likely to overlap
     
     # Reset event
     print("\n📋 Setup: Resetting event to 1 ticket...")
