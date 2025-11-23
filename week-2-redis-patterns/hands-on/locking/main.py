@@ -83,8 +83,15 @@ async def book_ticket_no_lock(event_id: int, request: BookingRequest, db: Sessio
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     
-    # Check availability (RACE CONDITION HERE!)
-    if event.available_tickets <= 0:
+    # Read current tickets BEFORE any delay
+    available = event.available_tickets
+    print(f"🔍 [{request.user_name}] Read from DB: {available} tickets available")
+    
+    # Simulate processing time - ALL requests sleep here with same value!
+    time.sleep(0.5)
+    
+    # Check availability using the OLD value we read
+    if available <= 0:
         print(f"❌ [{request.user_name}] No tickets available")
         return BookingResponse(
             success=False,
@@ -92,8 +99,7 @@ async def book_ticket_no_lock(event_id: int, request: BookingRequest, db: Sessio
             event=event.to_dict()
         )
     
-    # Simulate some processing time (makes race condition more likely)
-    time.sleep(0.1)
+    print(f"✅ [{request.user_name}] Proceeding with booking (saw {available} tickets)...")
     
     # Create booking
     booking = Booking(
@@ -102,7 +108,7 @@ async def book_ticket_no_lock(event_id: int, request: BookingRequest, db: Sessio
     )
     db.add(booking)
     
-    # Decrement available tickets
+    # Decrement available tickets (RACE HERE - multiple threads decrement!)
     event.available_tickets -= 1
     
     db.commit()
@@ -169,8 +175,14 @@ async def book_ticket_with_lock(event_id: int, request: BookingRequest, db: Sess
         if not event:
             raise HTTPException(status_code=404, detail="Event not found")
         
-        # Check availability
-        if event.available_tickets <= 0:
+        # Read current tickets
+        available = event.available_tickets
+        print(f"🔍 [{request.user_name}] Read from DB (LOCKED): {available} tickets available")
+        
+        # Simulate processing
+        time.sleep(0.5)
+        
+        if available <= 0:
             print(f"❌ [{request.user_name}] No tickets available")
             return BookingResponse(
                 success=False,
@@ -178,8 +190,7 @@ async def book_ticket_with_lock(event_id: int, request: BookingRequest, db: Sess
                 event=event.to_dict()
             )
         
-        # Simulate some processing time
-        time.sleep(0.1)
+        print(f"✅ [{request.user_name}] Proceeding with booking (LOCKED, saw {available} tickets)...")
         
         # Create booking
         booking = Booking(
