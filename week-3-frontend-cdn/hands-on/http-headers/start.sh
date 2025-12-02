@@ -4,7 +4,7 @@ echo "🚀 Starting HTTP Caching Headers Demo..."
 echo "=========================================="
 
 # Check if Docker is running
-if ! docker info > /dev/null 2>&1; then
+if ! docker info >/dev/null 2>&1; then
     echo "❌ Error: Docker is not running!"
     echo ""
     echo "Please start Docker Desktop and try again."
@@ -26,4 +26,3 @@ echo ""
 echo "🛑 To stop:"
 echo "   ./stop.sh"
 echo ""
-
