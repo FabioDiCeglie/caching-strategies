@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    container_name: http-headers-demo
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
