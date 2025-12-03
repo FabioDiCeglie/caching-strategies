@@ -214,55 +214,6 @@ ETag is a hash (MD5) of the content:
 
 ---
 
-### Public vs Private
-
-```javascript
-// Public API (anyone can access)
-res.setHeader('Cache-Control', 'public, max-age=3600');
-
-// User profile (user-specific)
-if (req.user) {
-  res.setHeader('Cache-Control', 'private, max-age=300');
-}
-```
-
-`private` prevents CDN from caching user-specific data and serving it to other users.
-
----
-
-## Testing with cURL
-
-### ETag Flow
-
-```bash
-# First request
-curl -i http://localhost:8000/api/etag
-# HTTP/1.1 200 OK
-# ETag: "abc123xyz"
-# (full body)
-
-# Second request with If-None-Match
-curl -i -H 'If-None-Match: "abc123xyz"' http://localhost:8000/api/etag
-# HTTP/1.1 304 Not Modified
-# (no body - bandwidth saved!)
-```
-
-### Last-Modified Flow
-
-```bash
-# First request
-curl -i http://localhost:8000/api/last-modified
-# HTTP/1.1 200 OK
-# Last-Modified: Wed, 21 Oct 2024 07:28:00 GMT
-
-# Second request with If-Modified-Since
-curl -i -H 'If-Modified-Since: Wed, 21 Oct 2024 07:28:00 GMT' \
-  http://localhost:8000/api/last-modified
-# HTTP/1.1 304 Not Modified
-```
-
----
-
 ## Real-World Patterns
 
 ### Blog Post

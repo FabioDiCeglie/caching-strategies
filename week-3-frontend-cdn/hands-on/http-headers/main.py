@@ -206,7 +206,7 @@ async def root():
                 resultDiv.className = ''; // Remove empty class
                 resultDiv.textContent = '⏳ Loading...';
                 
-                const response = await fetch(url);
+                const response = await fetch(url, { cache: 'no-cache' });
                 
                 // Consume the body if present
                 if (response.status !== 304) {
