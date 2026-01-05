@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: cache-penetration-api
+    ports:
+      - "8007:8007"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6386:6379"
+
