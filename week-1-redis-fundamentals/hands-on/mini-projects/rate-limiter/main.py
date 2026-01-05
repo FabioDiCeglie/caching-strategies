@@ -6,6 +6,7 @@ Uses Redis INCR for atomic counter-based rate limiting.
 from fastapi import FastAPI, HTTPException, Request, Depends
 import redis
 import time
+import os
 from datetime import datetime
 
 app = FastAPI(
@@ -15,8 +16,8 @@ app = FastAPI(
 )
 
 redis_client = redis.Redis(
-    host='localhost',
-    port=6379,
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
     decode_responses=True
 )
 
