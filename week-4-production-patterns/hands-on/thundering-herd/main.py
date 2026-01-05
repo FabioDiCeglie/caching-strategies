@@ -140,66 +140,27 @@ def home():
         <style>
             body { font-family: system-ui; max-width: 800px; margin: 50px auto; padding: 20px; }
             h1 { color: #333; }
-            .endpoint { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
-            button { padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; }
-            .danger { background: #ff4444; color: white; border: none; border-radius: 4px; }
-            .safe { background: #44aa44; color: white; border: none; border-radius: 4px; }
-            .neutral { background: #4444aa; color: white; border: none; border-radius: 4px; }
-            pre { background: #1e1e1e; color: #ddd; padding: 15px; border-radius: 4px; overflow-x: auto; }
-            .note { background: #fff3cd; padding: 15px; border-radius: 4px; margin: 20px 0; }
+            pre { background: #1e1e1e; color: #ddd; padding: 15px; border-radius: 4px; }
+            code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
         </style>
     </head>
     <body>
         <h1>🦬 Thundering Herd Demo</h1>
         
-        <div class="note">
-            <strong>How to test:</strong> Use the test script to send concurrent requests.
-            Watch the server logs to see the difference!
-        </div>
+        <h3>Run the test:</h3>
+        <pre>docker exec -it thundering-herd-api python test_stampede.py</pre>
         
-        <div class="endpoint">
-            <h3>❌ Unsafe Endpoint (No Protection)</h3>
-            <p>Every cache miss triggers a database query.</p>
-            <button class="danger" onclick="fetch('/product/unsafe').then(r=>r.json()).then(d=>alert(JSON.stringify(d,null,2)))">
-                GET /product/unsafe
-            </button>
-        </div>
+        <h3>Endpoints</h3>
+        <ul>
+            <li><code>GET /product/unsafe</code> - No protection (causes stampede)</li>
+            <li><code>GET /product/safe</code> - With locking (prevents stampede)</li>
+            <li><code>DELETE /cache</code> - Clear cache</li>
+        </ul>
         
-        <div class="endpoint">
-            <h3>✅ Safe Endpoint (With Locking)</h3>
-            <p>Only one request queries DB, others wait for cache.</p>
-            <button class="safe" onclick="fetch('/product/safe').then(r=>r.json()).then(d=>alert(JSON.stringify(d,null,2)))">
-                GET /product/safe
-            </button>
-        </div>
-        
-        <div class="endpoint">
-            <h3>🔧 Utilities</h3>
-            <button class="neutral" onclick="fetch('/cache',{method:'DELETE'}).then(()=>alert('Cache cleared!'))">
-                Clear Cache
-            </button>
-            <button class="neutral" onclick="fetch('/stats').then(r=>r.json()).then(d=>alert(JSON.stringify(d,null,2)))">
-                Check Stats
-            </button>
-        </div>
-        
-        <h2>📊 Expected Results</h2>
+        <h3>Expected Results</h3>
         <pre>
-# 10 concurrent requests to UNSAFE endpoint:
-💾 DATABASE QUERY STARTED...   (request 1)
-💾 DATABASE QUERY STARTED...   (request 2)
-💾 DATABASE QUERY STARTED...   (request 3)
-...
-= 10 DB queries! 💥
-
-# 10 concurrent requests to SAFE endpoint:
-🔒 LOCK ACQUIRED - querying DB...  (request 1 wins)
-⏳ LOCK EXISTS - waiting...        (request 2 waits)
-⏳ LOCK EXISTS - waiting...        (request 3 waits)
-💾 DATABASE QUERY COMPLETED
-✅ CACHE POPULATED                 (request 2 gets cache)
-✅ CACHE POPULATED                 (request 3 gets cache)
-= 1 DB query! ✅
+UNSAFE: 10 concurrent requests → 10 DB queries 💥
+SAFE:   10 concurrent requests → 1 DB query ✅
         </pre>
     </body>
     </html>
