@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: thundering-herd-api
+    ports:
+      - "8004:8004"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6383:6379"
+

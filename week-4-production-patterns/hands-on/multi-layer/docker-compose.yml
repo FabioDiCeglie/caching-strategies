@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: multi-layer-api
+    ports:
+      - "8005:8005"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6384:6379"
+
